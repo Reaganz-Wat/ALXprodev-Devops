@@ -2,5 +2,5 @@
 curl -s -f https://pokeapi.co/api/v2/pokemon/ -o data.json
 
 if [ $? -ne 0 ]; then
-    echo "[$(date)]: Failed to fetch Pikachu data." >> error.txt
+    echo "[$(date)]: Failed to fetch Pikachu data." >> errors.txt
 fi
