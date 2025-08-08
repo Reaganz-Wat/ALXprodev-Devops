@@ -2,11 +2,10 @@
 
 FILE='pokemon_data/bulbasaur.json'
 
-# Extract using jq
-NAME=$(jq -r '.name' "$FILE" | sed 's/.*/\u&/')  # sed capitalizes first letter
-HEIGHT=$(jq '.height' "$FILE" | awk '{printf "%.1f", $1/10}') # convert dm → m
-WEIGHT=$(jq '.weight' "$FILE" | awk '{print $1/10}')           # convert hg → kg
-TYPE=$(jq -r '.types[0].type.name' "$FILE" | sed 's/.*/\u&/')  # capitalize
+# Extract with jq
+name=$(jq -r '.name' "$FILE" | sed 's/.*/\u&/')
+formatted_height=$(jq '.height' "$FILE" | awk '{printf "%.1f", $1/10}')
+formatted_weight=$(jq '.weight' "$FILE" | awk '{printf "%.1f", $1/10}')
+type=$(jq -r '.types[0].type.name' "$FILE" | sed 's/.*/\u&/')
 
-# Print formatted output
-echo "$NAME is of type $TYPE, weighs ${WEIGHT}kg, and is ${HEIGHT}m tall."
+echo "$name is of type $type, weighs ${formatted_weight}kg, and is ${formatted_height}m tall."
