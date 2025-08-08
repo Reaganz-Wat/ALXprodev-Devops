@@ -9,20 +9,27 @@ pokemon_list=(bulbasaur ivysaur venusaur charmander charmeleon)
 # Loop through each Pokémon
 for name in "${pokemon_list[@]}"; do
     echo "Fetching data for $name..."
-
     url="https://pokeapi.co/api/v2/pokemon/$name"
     output_file="pokemon_data/$name.json"
 
-    # Make the API request
-    curl -s "$url" -o "$output_file"
+    attempts=0
+    success=0
 
-    # Check if the request was successful
-    if [ $? -ne 0 ]; then
-        echo "[$(date)] Error fetching $name from $url" >> errors.txt
-    else
-        echo "Saved data to $output_file ✅"
+    while [[ $attempts -lt 3 ]]; do
+        ((attempts++))
+        curl -s "$url" -o "$output_file"
+        if [[ $? -eq 0 && -s $output_file ]]; then
+            echo "Saved data to $output_file ✅"
+            success=1
+            break
+        else
+            echo "Attempt $attempts failed for $name"
+            sleep 1
+        fi
+    done
+
+    if [[ $success -ne 1 ]]; then
+        echo "[$(date)] Error fetching $name from $url after $attempts attempts" >> errors.txt
     fi
 
-    # Delay to avoid rate limiting
-    sleep 1
 done
