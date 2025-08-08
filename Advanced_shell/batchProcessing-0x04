@@ -30,12 +30,19 @@ fetch_pokemon() {
     fi
 }
 
-# Run fetch_pokemon in background for each Pokémon
 for name in "${pokemon_list[@]}"; do
     fetch_pokemon "$name" &
 done
 
-# Wait for all background fetches to complete
-wait
+# Show all background jobs
+jobs
+
+# Wait until all jobs have finished
+while jobs | grep -q "Running"; do
+    sleep 1
+done
+
+# Kill any remaining jobs as a safety
+jobs -p | xargs -r kill
 
 echo "All Pokémon data fetched."
